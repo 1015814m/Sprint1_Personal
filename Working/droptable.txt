@@ -1,0 +1,16 @@
+drop table [ProviderInfo];
+drop table [Fund];
+drop table [FeedInformation];
+drop table [Transaction];
+drop table [Image];
+drop table [RewardItem];
+drop table [RewardCategory];
+drop table [RewardProvider];
+drop table [Achievement];
+drop table [Applaud];
+drop table [Value];
+drop table [Administrator];
+drop table [Employee];
+drop table [EmployeeLogin];
+drop table [Company];
+drop table [SystemAdmin];

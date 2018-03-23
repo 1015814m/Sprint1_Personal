@@ -1,0 +1,9 @@
+INSERT INTO [dbo].[Company] VALUES ('Elk Trucking');
+INSERT INTO [dbo].[Company] VALUES ('Elk Logistics');
+
+INSERT INTO [dbo].[EmployeeLogin] VALUES ('morrij','2xrIe0cFcQ1KJ9TcNmfe0j6vr0DimCo=','2018-01-01','John Morrissey','2018-01-01',2);
+INSERT INTO [dbo].[Administrator] VALUES ('John','Morrissey','elkTestIncoming@gmail.com','System Admin','2018-01-01',1,1);
+INSERT INTO [dbo].[EmployeeLogin] VALUES ('derfla','2xrIe0cFcQ1KJ9TcNmfe0j6vr0DimCo=','2018-01-01','John Morrissey','2018-01-01',1);
+INSERT INTO [dbo].[Employee] VALUES ('Andrea','Derflinger','elkTestIncoming@gmail.com','John Morrissey','2018-01-01',2,0,1,1,0,'Girl With Job',0,0);
+INSERT INTO [dbo].[EmployeeLogin] VALUES ('marles','2xrIe0cFcQ1KJ9TcNmfe0j6vr0DimCo=','2018-01-01','John Morrissey','2018-01-01',3);
+INSERT INTO [dbo].[RewardProvider] VALUES ('Down The Street Grill','Sean','Marley','703-111-1111','elkTestIncoming@gmail.com','John Morrissey','2018-01-01',1,3);
