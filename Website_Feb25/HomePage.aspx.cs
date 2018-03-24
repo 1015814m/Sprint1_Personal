@@ -27,9 +27,9 @@ public partial class HomePage : System.Web.UI.Page
             Response.Redirect("Login.aspx");
         }
         loginType = (int)Session["login"];
-        if (loginType == 1)
+        if (loginType == 2)
         {
-            Response.Redirect("HomePage.aspx");
+            Response.Redirect("Admin.aspx");
         }
         else if (loginType == 3)
         {

@@ -44,6 +44,7 @@ public partial class _Default : System.Web.UI.Page
                     int loginType = (int)reader["LoginType"];
                     int loginID = (int)reader["EmpLoginID"];
                     
+                    
 
                     bool verify = SimpleHash.VerifyHash(password, "MD5", pwHash);
                     if (verify)
@@ -52,6 +53,10 @@ public partial class _Default : System.Web.UI.Page
                         {
                             case 1:
                                 Session["login"] = 1;
+                                if (!enabledEmployee(loginID))
+                                {
+                                    verify = false;
+                                }
                                 break;
                             case 2:
                                 Session["login"] = 2;
@@ -71,8 +76,11 @@ public partial class _Default : System.Web.UI.Page
                         getLoginInfo(loginID, loginType);
                     }
 
+
                 }
                 conn.Close();
+
+
                 Session["employeeLoggedIn"] = e.Authenticated.ToString();
 
             }
@@ -91,145 +99,28 @@ public partial class _Default : System.Web.UI.Page
 
     protected void employeeLogin_LoggedIn(object sender, EventArgs e)
     {
-        string url = "Logout.aspx";
-        switch ((int)Session["login"])
-        {
-            case 1:
-                url = "HomePage.aspx";
-                break;
-            case 2:
-                url = "Admin.aspx";
-                break;
-            case 3:
-                url = "VendorHome.aspx";
-                break;
-            case -1:
-                url = "Logout.aspx";
-                break;
-            default:
-                break;
-        }
-        Response.Redirect(url);
+
+            string url = "Logout.aspx";
+            switch ((int)Session["login"])
+            {
+                case 1:
+                    url = "HomePage.aspx";
+                    break;
+                case 2:
+                    url = "Admin.aspx";
+                    break;
+                case 3:
+                    url = "VendorHome.aspx";
+                    break;
+                case -1:
+                    url = "Logout.aspx";
+                    break;
+                default:
+                    break;
+            }
+            Response.Redirect(url);
+        
     }
-
-    //protected void getUserInfo(int empLoginID)
-    //{
-    //    try
-    //    {
-    //        int count = 0;
-    //        string commandText = "SELECT TOP 1 EmployeeID, FirstName, LastName, Email, LastUpdated, LastUpdatedBy, Points " +
-    //            "FROM [DBO].[EMPLOYEE] WHERE EmpLoginID = @EmpLoginID";
-    //        SqlConnection conn = ProjectDB.connectToDB();
-    //        SqlCommand select = new SqlCommand(commandText, conn);
-    //        select.Parameters.AddWithValue("@EmpLoginID", empLoginID);
-
-    //        SqlDataReader reader = select.ExecuteReader();
-
-
-    //        //if there is data for the user read it
-    //        if(reader.HasRows)
-    //        {
-    //            reader.Read();
-    //            count++;
-    //            int employeeID = (int)reader["EmployeeID"];
-    //            String firstName = reader["FirstName"].ToString();
-    //            String lastName = reader["LastName"].ToString();
-    //            String email = reader["Email"].ToString();
-    //            DateTime lastUpdated = (DateTime)reader["LastUpdated"];
-    //            String lastUpdatedBy = reader["LastUpdatedBy"].ToString();
-    //            Decimal points = (Decimal)reader["Points"];
-
-    //            Employee user = new Employee(firstName, lastName, email, lastUpdated, lastUpdatedBy, empLoginID, false, points);
-    //            Session["user"] = user;
-
-
-    //            //Employee user2 = (Employee)Session["user"];
-    //        }
-    //        else
-    //        {
-    //            reader.Close();
-    //        }
-    //        if(count == 0) 
-    //        {
-    //            //if the user does not exist in the employee table check the administrator table for the employee
-    //            commandText = "SELECT TOP 1 AdminID, FirstName, LastName, Email, LastUpdated, LastUpdatedBy" +
-    //                " FROM [DBO].[ADMINISTRATOR] WHERE EmpLoginID = @EmpLoginID";
-    //            select = new SqlCommand(commandText, conn);
-    //            select.Parameters.AddWithValue("@EmpLoginID", empLoginID);
-
-    //            SqlDataReader adminReader = select.ExecuteReader();
-
-
-    //            //if the administrator exists then read the data
-                
-    //            if (adminReader.HasRows)
-    //            {
-    //                adminReader.Read();
-    //                int adminID = (int)adminReader["AdminID"];
-    //                String firstName = adminReader["FirstName"].ToString();
-    //                String lastName = adminReader["LastName"].ToString();
-    //                String email = adminReader["Email"].ToString();
-    //                DateTime lastUpdated = (DateTime)adminReader["LastUpdated"];
-    //                String lastUpdatedBy = adminReader["LastUpdatedBy"].ToString();
-
-    //                //create an employee object that is specific to the administrator i.e. the admin boolean is true
-    //                Employee user = new Employee(firstName, lastName, email, lastUpdated, lastUpdatedBy, empLoginID, true);
-
-    //                //create a session variable for the user logged in
-    //                Session["user"] = user;
-
-
-    //            }
-    //            else
-    //            {
-    //                adminReader.Close();
-    //            }
-    //        }
-
-            
-    //        conn.Close();
-
-    //    }
-    //    catch (Exception ex)
-    //    {
-            
-    //        errorMessage.Text += "\n" + ex;
-
-    //    }
-    //}
-
-    //protected int getLoginID(string userName)
-    //{
-    //    try
-    //    {
-    //        string commandText = "SELECT TOP 1 EmpLoginID FROM [DBO].[EMPLOYEELOGIN] WHERE UserName = @UserName";
-    //        SqlConnection conn = ProjectDB.connectToDB();
-    //        SqlCommand select = new SqlCommand(commandText, conn);
-    //        select.Parameters.AddWithValue("@UserName", userName);
-
-    //        SqlDataReader reader = select.ExecuteReader();
-
-    //        if(reader.HasRows)
-    //        {
-    //            reader.Read();
-    //            int empLoginID = (int)reader["EmpLoginID"];
-    //            conn.Close();
-    //            return empLoginID;
-    //        }
-    //        else
-    //        {
-    //            return -1;
-    //        }
-
-
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        errorMessage.Text += "\n" + ex;
-    //        return -1;
-    //    }
-    //}
-
 
 
     protected void ForgotPass_Click(object sender, EventArgs e)
@@ -245,13 +136,13 @@ public partial class _Default : System.Web.UI.Page
             switch (loginType)
             {
                 case 1:
-                    string empCommand = "select top 1 EmployeeID, FirstName, LastName, Email, LastUpdatedBy, LastUpdated, Points, Enabled, CompanyID, LandingPage, " +
+                    string empCommand = "select top 1 EmployeeID, FirstName, LastName, Email, LastUpdatedBy, LastUpdated, Points, Enabled, CompanyID, LandingPage, Nickname, " +
                         "UseNickname, UseAnon FROM [dbo].[Employee] WHERE EmpLoginID = @EmpLoginID";
                     SqlCommand select = new SqlCommand(empCommand, conn);
                     select.Parameters.AddWithValue("@EmpLoginID", loginID);
                     SqlDataReader empReader = select.ExecuteReader();
 
-                    if(empReader.HasRows)
+                    if (empReader.HasRows)
                     {
                         empReader.Read();
                         int id = (int)empReader["EmployeeID"];
@@ -261,37 +152,24 @@ public partial class _Default : System.Web.UI.Page
                         string updateBy = empReader["LastUpdatedBy"].ToString();
                         DateTime update = (DateTime)empReader["LastUpdated"];
                         Decimal points = (Decimal)empReader["Points"];
-                        string nickname = empReader["Nickname"].ToString();
-
-                        Boolean enabled;
-                        if ((int)empReader["Enabled"] == 0)
+                        string nickname = " ";
+                        if (empReader["Nickname"] == DBNull.Value)
                         {
-                            enabled = false;
+                            nickname = " ";
                         }
                         else
                         {
-                            enabled = true;
+                            nickname = empReader["Nickname"].ToString();
                         }
+
+                        Boolean enabled = (Boolean)empReader["Enabled"];
+
                         int companyid = (int)empReader["CompanyID"];
                         int landing = (int)empReader["LandingPage"];
-                        Boolean usenick;
-                        if((int)empReader["UseNickname"] == 0)
-                        {
-                            usenick = false;
-                        }
-                        else
-                        {
-                            usenick = true;
-                        }
-                        Boolean anon;
-                        if ((int)empReader["UseAnon"] == 0)
-                        {
-                            anon = false;
-                        }
-                        else
-                        {
-                            anon = true;
-                        }
+                        Boolean usenick = (Boolean)empReader["UseNickname"];
+
+                        Boolean anon = (Boolean)empReader["UseAnon"];
+
 
                         Employee user = new Employee(id, fname, lname, email, updateBy, update, loginID, points, enabled, companyid, landing, usenick, nickname, anon);
                         Session["user"] = user;
@@ -351,25 +229,37 @@ public partial class _Default : System.Web.UI.Page
             conn.Close();
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            
         }
     }
 
     protected Boolean enabledEmployee(int id)
     {
+        Boolean isEnabled = false;
         try
         {
-            string commandText = "select Enabled from [dbo].[Employee] where EmpLoginID = @EmpLoginID";
+            string commandText = "select top 1 [Enabled] as Result from [dbo].[Employee] where EmpLoginID = @EmpLoginID";
             SqlConnection conn = ProjectDB.connectToDB();
             SqlCommand select = new SqlCommand(commandText, conn);
             select.Parameters.AddWithValue("@EmpLoginID", id);
 
-        }
-        catch (Exception)
-        {
+            SqlDataReader reader = select.ExecuteReader();
 
+            if(reader.HasRows)
+            {
+                reader.Read();
+                isEnabled = (Boolean)reader["Result"];
+
+            }
+            conn.Close();
+            
         }
+        catch (Exception ex)
+        {
+            employeeLogin.FailureText = "" + ex;
+        }
+        return isEnabled;
     }
 }
